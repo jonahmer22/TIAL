@@ -1,7 +1,7 @@
 # MacOS Stuff
 *.DS_Store
 
-# Marrow Binary
+# Final Binary
 a-lang
 
 # Python venv for testing
