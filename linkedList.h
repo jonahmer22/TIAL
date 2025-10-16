@@ -27,6 +27,10 @@ typedef struct List{
 
 // get the length of the list
 size_t listLen(List *list);
+// get the ptr of the value at idx in the list
+void *listGet(List *list, size_t idx);
+// find the index of an item in a list
+size_t listFind(List *list, void *ptr);
 
 // queue behavior for linked list
 void listEnqueue(List *list, void *ptr);
