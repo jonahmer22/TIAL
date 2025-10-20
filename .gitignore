@@ -2,7 +2,7 @@
 *.DS_Store
 
 # Final Binary
-a-lang
+nal
 
 # Python venv for testing
 env/
