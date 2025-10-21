@@ -73,32 +73,59 @@ size_t listLen(List *list){
 	return list->length;
 }
 void *listGet(List *list, size_t idx){
+	Node *temp = list->head;
+	size_t i = 0;
+	while(temp != NULL && i < idx){
+		temp = temp->next;
+		i++;
+	}
 
+	if(temp){
+		return temp->ptr;
+	}
+	return NULL;
 }
 size_t listFind(List *list, void *ptr){
+	Node *temp = list->head;
+	size_t idx = 0;
 
+	while(temp != NULL){
+		if(temp->ptr == ptr){
+			return idx;
+		}
+
+		temp = temp->next;
+		idx++;
+	}
+
+	// didn't find it
+	return -1;
 }
 
 // queue behavior
 void listEnqueue(List *list, void *ptr){
-	
+	// effectively inserting at the end
 }
 void *listDequeue(List *list){
-
+	// effectively popping from the front
 }
 
 // stack behavior
 void listPush(List *list, void *ptr){
-
+	// inserting at the end
 }
 void *listPop(List *list){
-
+	// removing from the end
 }
 
 // list behavior
 void listInsert(List *list, size_t idx, void *ptr){
-
+	// insert at any arbitrary index
+	// implement this first and base the others on this
+	// handles all base cases
 }
 void *listRemove(List *list, size_t idx){
-
+	// remove from any arbitrary index
+	// implement this first and base the others on this
+	// handles all base cases
 }
