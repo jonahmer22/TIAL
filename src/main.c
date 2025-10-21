@@ -41,6 +41,8 @@ char *readFile(const char *path, size_t *outLen){
 	if(outLen)	// if we want the size back
 		*outLen = (size_t)size;
 
+	fclose(file);
+
 	return buffer;
 }
 

@@ -1,5 +1,5 @@
 all:
-	gcc -Wall -Wextra -I ./include/ -I ./deps/arena/ ./deps/arena/arena.c ./src/*.c -o nal
+	gcc -Wall -Wextra -I ./include/ -I ./deps/arena/ ./deps/arena/arena.c ./src/*.c -o tial
 
 clean:
-	rm ./nal
+	rm ./tial
