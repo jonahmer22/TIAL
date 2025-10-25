@@ -31,6 +31,10 @@ size_t listLen(List *list);
 void *listGet(List *list, size_t idx);
 // find the index of an item in a list
 size_t listFind(List *list, void *ptr);
+// gets the next value in the list, usefull for while loops
+// if there is no element, returns NULL
+void *listGetNext(List *list, void *ptr);
+void *listGetPrev(List *list, void *ptr);
 
 // queue behavior for linked list
 void listEnqueue(List *list, void *ptr);
@@ -45,7 +49,9 @@ void listInsert(List *list, size_t idx, void *ptr);
 void *listRemove(List *list, size_t idx);
 
 // creation and destruction for linked list
-void listInit(List *list);
-void listDestroy();	// using it's own arena rn so currently only destroys that
+// initializes and returns a new List allocated from an internal arena
+List* listInit();
+// destroys the internal arena used by lists created via listInit()
+void listDestroy();	// currently destroys the shared arena used by the list
 
 #endif

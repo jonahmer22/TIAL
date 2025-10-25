@@ -28,11 +28,6 @@ static Node *nodeInit(){
 
 	return result;
 }
-static void nodeDestroy(Node *node){
-	if(node){
-		free(node);
-	}
-}
 
 // ptr getters and setters
 static void nodeSetPtr(Node *node, void *ptr){
@@ -64,19 +59,22 @@ static Node *nodeGetNext(Node *node){
 // ======
 
 // General functions used for all types
-void listInit(List *list){
+List *listInit(){
 	if(!llarena){
 		llarena = arenaLocalInit();
 	}
 
-	list = arenaLocalAlloc(llarena, sizeof(List));
+	List *list = arenaLocalAlloc(llarena, sizeof(List));
 
 	list->head = list->tail = NULL;
 	list->length = 0;
+
+	return list;
 }
 void listDestroy(){
 	if(llarena){
 		arenaLocalDestroy(llarena);
+		llarena = NULL;
 	}
 }
 size_t listLen(List *list){
@@ -115,7 +113,7 @@ void *listGetNext(List *list, void *ptr){
 	Node *temp = list->head;
 	while(temp != NULL){
 		if(temp->ptr == ptr){
-			return temp->next->ptr;
+			return temp->next ? temp->next->ptr : NULL;
 		}
 		temp = temp->next;
 	}
@@ -126,7 +124,7 @@ void *listGetPrev(List *list, void *ptr){
 	Node *temp = list->head;
 	while(temp != NULL){
 		if(temp->ptr == ptr){
-			return temp->prev->ptr;
+			return temp->prev ? temp->prev->ptr : NULL;
 		}
 		temp = temp->next;
 	}
@@ -138,8 +136,8 @@ void *listGetPrev(List *list, void *ptr){
 
 // queue behavior
 void listEnqueue(List *list, void *ptr){
-	// effectively inserting at the end
-	listInsert(list, list->length - 1, ptr);
+	// insert at the end (append)
+	listInsert(list, list->length, ptr);
 }
 void *listDequeue(List *list){
 	// effectively popping from the front
@@ -148,8 +146,8 @@ void *listDequeue(List *list){
 
 // stack behavior
 void listPush(List *list, void *ptr){
-	// inserting at the end
-	listInsert(list, list->length - 1, ptr);
+	// push to the end (append)
+	listInsert(list, list->length, ptr);
 }
 void *listPop(List *list){
 	// removing from the end
@@ -162,9 +160,9 @@ void listInsert(List *list, size_t idx, void *ptr){
 	// implement this first and base the others on this
 	// handles all base cases
 
-	// prevent out of bounds access and just exit if it happens
-	if(idx > list->length - 1 || idx <= 0){
-		fprintf(stderr, "[FATAL]: Out of bounds access idx: %ld on list of length: %ld", idx, list->length);
+	// valid positions are 0..length (inclusive). length means append.
+	if(idx > list->length){
+		fprintf(stderr, "[FATAL]: Out of bounds access idx: %zu on list of length: %zu\n", idx, list->length);
 
 		exit(21);
 	}
@@ -182,8 +180,8 @@ void listInsert(List *list, size_t idx, void *ptr){
 
 		return;
 	}
-	// if the index is at the end
-	else if(idx == list->length - 1){
+	// append to the end
+	else if(idx == list->length){
 		// set values for temp
 		temp->prev = list->tail;
 		temp->ptr = ptr;
@@ -215,7 +213,7 @@ void listInsert(List *list, size_t idx, void *ptr){
 		Node *after = list->head;
 		size_t i = 0;
 		while(after != NULL && i < idx){
-			temp = after->next;
+			after = after->next;
 			i++;
 		}
 		Node *before = after->prev;
@@ -234,7 +232,7 @@ void listInsert(List *list, size_t idx, void *ptr){
 	}
 	
 	// undefined behavior exit, shouldn't get here
-	fprintf(stderr, "[FATAL]: Undefined list behavior.\n call:\n\tlistInsert(List: %p, Index: %ld, Ptr: %p)", list, idx, ptr);
+	fprintf(stderr, "[FATAL]: Undefined list behavior.\n call:\n\tlistInsert(List: %p, Index: %zu, Ptr: %p)\n", (void*)list, idx, ptr);
 	exit(22);
 }
 void *listRemove(List *list, size_t idx){
@@ -243,14 +241,27 @@ void *listRemove(List *list, size_t idx){
 	// handles all base cases
 
 	// prevent out of bounds access and just exit if it happens
-	if(idx > list->length - 1 || idx <= 0 || list->length != 0){
-		fprintf(stderr, "[FATAL]: Out of bounds access idx: %ld on list of length: %ld", idx, list->length);
+	if(list->length == 0 || idx >= list->length){
+		fprintf(stderr, "[FATAL]: Out of bounds access idx: %zu on list of length: %zu\n", idx, list->length);
 
 		exit(21);
 	}
 
 	Node *temp = NULL;
 
+	// only 1 item left;
+	if(list->length == 1){
+		temp = list->head;
+
+		// update list values
+		list->head = list->tail = NULL;
+		list->length--;
+
+		// null pointers
+		temp->next = temp->prev = NULL;
+		
+		return temp->ptr;
+	}
 	// remove the last item
 	if(idx == list->length - 1){
 		// get the value from the list
@@ -305,7 +316,7 @@ void *listRemove(List *list, size_t idx){
 	}
 
 	// undefined behavior exit
-	fprintf(stderr, "[FATAL]: Undefined list behavior.\n call:\n\tlistRemove(List: %p, Index: %ld)", list, idx);
+	fprintf(stderr, "[FATAL]: Undefined list behavior.\n call:\n\tlistRemove(List: %p, Index: %zu)\n", (void*)list, idx);
+	
 	exit(22);
-
 }
