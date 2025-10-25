@@ -46,6 +46,6 @@ void *listRemove(List *list, size_t idx);
 
 // creation and destruction for linked list
 void listInit(List *list);
-void listDestroy(List *list);
+void listDestroy();	// using it's own arena rn so currently only destroys that
 
 #endif

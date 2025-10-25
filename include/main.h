@@ -2,5 +2,6 @@
 #define MAIN_H
 
 #include "linkedList.h"
+#include "arena.h"
 
 #endif
