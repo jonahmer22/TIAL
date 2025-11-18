@@ -46,6 +46,8 @@ char *readFile(const char *path, size_t *outLen){
 	return buffer;
 }
 
+
+
 int main(int argc, char **argv){
 	// get user input
 	// at this stage it should only be an input file
